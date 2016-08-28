@@ -1,0 +1,77 @@
+# This script monitors the buttons on the PiTFT resistive touch display
+# The state of the button is recorded in btn#Memory so that we can toggle things on and off with a single switch
+
+import RPi.GPIO as GPIO
+import time
+import os
+# import subprocess  # not currently in use but subprocess.call might be needed insted of os.system
+
+# btn1Memory = 0
+btn2Memory = 0
+btn3Memory = 0
+btn4Memory = 0
+
+# PiTFT buttons available are 23, 22, 27, 18
+# Btn1 = 23     # first, reft most, button. Currently in use by power off script
+Btn2 = 22       # second button
+Btn3 = 27       # third button. Originally labeled 21
+Btn4 = 18       # fourth, right most, button
+GPIO.setmode(GPIO.BCM)
+
+#GPIO.setup(Btn1, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(Btn2, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(Btn3, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(Btn4, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+
+# These lines setup the Backlight control. they probably belong somewhere else
+# but this is the only way I knew to make it work
+os.system("sudo sh -c \"echo 508 > /sys/class/gpio/export\"")
+os.system("sudo sh -c \"echo 'out' > /sys/class/gpio/gpio508/direction\"")
+os.system("sudo sh -c \"echo '1' > /sys/class/gpio/gpio508/value\"")
+
+while True:
+    #Btn1_state = GPIO.input(Btn1)      # Button 1 commented out because it is in use for power on/off
+    #if Btn1_state == False:
+        #if btn1Memory == 1:
+                #btn1Memory = 0
+                # run some command
+        #else:
+                #btn1Memory = 1
+                # run some command
+        #print('Button 1, GPIO ',Btn1,', pressed. New state is ', btn1Memory)
+        #time.sleep(0.5)
+
+    Btn2_state = GPIO.input(Btn2)       # Currently not doing anything
+    if Btn2_state == False:
+        if btn2Memory == 1:
+                btn2Memory = 0
+                # run some command
+        else:
+                btn2Memory = 1
+                # run some command
+        print('Button 2, GPIO ',Btn2,', pressed. New state is ', btn2Memory)
+        time.sleep(0.5)
+
+    Btn3_state = GPIO.input(Btn3)       # Switches backlight on and off
+    if Btn3_state == False:
+        if btn3Memory == 1:
+                btn3Memory = 0
+                os.system("sudo sh -c \"echo '1' > /sys/class/gpio/gpio508/value\"")
+        else:
+                btn3Memory = 1
+                os.system("sudo sh -c \"echo '0' > /sys/class/gpio/gpio508/value\"")
+        print('Button 3, GPIO ',Btn3,', pressed. New state is ', btn3Memory)
+        time.sleep(0.5)
+
+    Btn4_state = GPIO.input(Btn4)       # Launches or closes OctoPiPanel
+    if Btn4_state == False:
+        if btn4Memory == 1:
+                btn4Memory = 0
+                #Button state changed from 1 to 0 so we stop the below program
+                os.system("sudo service octopipanel stop")
+        else:
+                btn4Memory = 1
+                #Button state changed from 0 to 1 so we start the below program
+                os.system("sudo service octopipanel start")
+        print('Button 4, GPIO ',Btn4,', pressed. New state is ', btn4Memory)
+        time.sleep(0.5)
