@@ -6,40 +6,41 @@ import time
 import os
 # import subprocess  # not currently in use but subprocess.call might be needed insted of os.system
 
-# btn1Memory = 0
+btn1Memory = 0
 btn2Memory = 0
 btn3Memory = 0
 btn4Memory = 0
 
 # PiTFT buttons available are 23, 22, 27, 18
-# Btn1 = 23     # first, reft most, button. Currently in use by power off script
+Btn1 = 23     # first, reft most, button. Currently in use by power off script
 Btn2 = 22       # second button
 Btn3 = 27       # third button. Originally labeled 21
 Btn4 = 18       # fourth, right most, button
 GPIO.setmode(GPIO.BCM)
 
-#GPIO.setup(Btn1, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(Btn1, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(Btn2, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(Btn3, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(Btn4, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 # These lines setup the Backlight control. they probably belong somewhere else
 # but this is the only way I knew to make it work
-os.system("sudo sh -c \"echo 508 > /sys/class/gpio/export\"")
-os.system("sudo sh -c \"echo 'out' > /sys/class/gpio/gpio508/direction\"")
-os.system("sudo sh -c \"echo '1' > /sys/class/gpio/gpio508/value\"")
+##os.system("sudo sh -c \"echo 508 > /sys/class/gpio/export\"")
+##os.system("sudo sh -c \"echo 'out' > /sys/class/gpio/gpio508/direction\"")
+##os.system("sudo sh -c \"echo '1' > /sys/class/gpio/gpio508/value\"")
 
 while True:
-    #Btn1_state = GPIO.input(Btn1)      # Button 1 commented out because it is in use for power on/off
-    #if Btn1_state == False:
-        #if btn1Memory == 1:
-                #btn1Memory = 0
+    Btn1_state = GPIO.input(Btn1)      # Button 1 commented out because it is in use for power on/off
+    if Btn1_state == False:
+        if btn1Memory == 1:
+                btn1Memory = 0
+                print('Button 1, GPIO ',Btn1,', pressed. New state is ', btn1Memory)
+                os.system("sudo halt")
+        else:
+                btn1Memory = 1
                 # run some command
-        #else:
-                #btn1Memory = 1
-                # run some command
-        #print('Button 1, GPIO ',Btn1,', pressed. New state is ', btn1Memory)
-        #time.sleep(0.5)
+        print('Button 1, GPIO ',Btn1,', pressed. New state is ', btn1Memory)
+        time.sleep(0.5)
 
     Btn2_state = GPIO.input(Btn2)       # Currently not doing anything
     if Btn2_state == False:
@@ -56,10 +57,10 @@ while True:
     if Btn3_state == False:
         if btn3Memory == 1:
                 btn3Memory = 0
-                os.system("sudo sh -c \"echo '1' > /sys/class/gpio/gpio508/value\"")
+                os.system("sudo sh -c \"echo '1' > /sys/class/backlight/soc\:backlight/brightness\"")
         else:
                 btn3Memory = 1
-                os.system("sudo sh -c \"echo '0' > /sys/class/gpio/gpio508/value\"")
+                os.system("sudo sh -c \"echo '0' > /sys/class/backlight/soc\:backlight/brightness\"")
         print('Button 3, GPIO ',Btn3,', pressed. New state is ', btn3Memory)
         time.sleep(0.5)
 
