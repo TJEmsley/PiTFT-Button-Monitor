@@ -11,6 +11,7 @@ Adafruit PiTFT2.8 resistive touch display installed https://learn.adafruit.com/a
 X windows configured to boot to the PiTFT and rpi_power_switch enabled https://learn.adafruit.com/adafruit-pitft-28-inch-resistive-touchscreen-display-raspberry-pi/downloads?view=all#extras
 # Setup
 put PiTFT_Buttons.py.txt in the pi/home directory and rename it PiTFT_Buttons.py
-add the below lines to /etc/rc.local at the end of the file just before the exit 0 line
+
+Now add the below lines to /etc/rc.local at the end of the file just before the exit 0 line
   # launch the PiFTF button monitor
   python /home/pi/PiTFT_Buttons.py
