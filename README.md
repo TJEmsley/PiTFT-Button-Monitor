@@ -12,7 +12,7 @@ X windows configured to boot to the PiTFT and rpi_power_switch enabled https://l
 # Setup
 put PiTFT_Buttons.py.txt in the pi/home directory and rename it PiTFT_Buttons.py
 
-Now add the below lines to /etc/rc.local at the end of the file just before the exit 0 line
+Now add the below lines to /etc/rc.local at the end of the file just before the "exit 0" line
 
-  \# launch the PiFTF button monitor
-  python /home/pi/PiTFT_Buttons.py
+          # launch the PiFTF button monitor
+          python /home/pi/PiTFT_Buttons.py
